@@ -1,0 +1,168 @@
+import random
+
+random_word_list = ['banana', 'potato', 'whiteboard', 'fan', 'elementary', 'university', 'pumpkin']
+
+word = random.choice(random_word_list)
+hidden_word = "-" * len(word)
+
+guess = 0
+num_guess = 8
+
+print("Welcome to Hangman game!")
+print("You win if you guess the word before hanging!\n")
+print("The word looks like this:", hidden_word)
+print("You have", num_guess, "guess(es) left.\n")
+
+
+while guess < num_guess and "-" in hidden_word:
+    user_input = input("Enter a letter: ")
+    
+    while(len(user_input)!=1):
+      print("INVALID input. Enter one character.")
+      user_input = input("Enter a letter:")
+    
+    num_occurrences = word.count(user_input)
+    
+    if num_occurrences == 0:
+        # wrong
+        print("There are NO " + user_input + "\'s in the word. ")
+        guess += 1
+    else:
+        # correct
+        print("This guess is correct. ")
+        
+        # num_occurrences = 1, 2, 3, ..., k
+        
+        occurrence = 0
+        position = -1
+        
+        while occurrence < num_occurrences:
+            position = word.find(user_input, position+1)
+            hidden_word = hidden_word[:position] + user_input + hidden_word[position+1:]
+            # print(hidden_word)
+            occurrence += 1
+            
+    print("The word now looks like this:", hidden_word)
+    print("You have", num_guess - guess, "guess(es) left. ")
+    print()
+
+    if guess == 1:
+        print('''
+|   
+|
+|
+|
+|
+|
+|
+|
+--------
+            ''')
+
+    elif guess == 2:
+        print('''
+-----
+|   |
+|   0
+|
+|
+|
+|
+|
+|
+--------
+            ''')
+
+
+    elif guess == 3:
+        print('''
+-----
+|   |
+|   0
+|  -+-
+|
+|
+|
+|
+|
+--------
+            ''')
+
+    elif guess == 4:
+        print('''
+-----
+|   |
+|   0
+| /-+-
+|
+|
+|
+|
+|
+--------
+            ''')
+
+    elif guess == 5:
+        print('''
+-----
+|   |
+|   0
+| /-+-\\ 
+|
+|
+|
+|
+|
+--------
+            ''')
+    elif guess == 6:
+        print('''
+-----
+|   |
+|   0
+| /-+-\\ 
+|   | 
+|   | 
+|  
+|
+|
+--------
+            ''')
+
+    elif guess == 7:
+        print('''
+-----
+|   |
+|   0
+| /-+-\\ 
+|   | 
+|   | 
+|  | 
+|  | 
+
+|
+--------
+            ''')
+    elif guess == 8:
+        print('''
+-----
+|   |
+|   0
+| /-+-\\ 
+|   | 
+|   | 
+|  | | 
+|  | | 
+|
+--------
+            ''')
+ 
+
+
+
+print("The word was:", word)
+
+if "-" not in hidden_word:
+    print("You win!")
+else:
+    print("You lose!")
