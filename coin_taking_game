@@ -1,0 +1,46 @@
+import random
+
+play = True
+while play:
+  turn = 0 
+  #turn = 1
+  remaining_coins = random.randint(20,30)
+  print("You take turns removing 1, 2, or 3 coins. ")
+  print("You win if you take the last coin. ")
+  
+  while remaining_coins > 0:
+    print("\nThere are", remaining_coins, "coins remaining.")
+    if turn%2 == 0:
+      #Player1
+      taken_coins = int(input("Player 1: How many coins do you take? "))
+    else:
+      #Player 2
+      taken_coins = int(input("Player 2: How many coins do you take? "))
+    
+    while taken_coins < 1 or taken_coins > 3 or taken_coins > remaining_coins:
+      print("That's not a legal move. Try again." )
+      print("\nThere are", remaining_coins, "coins remaining")
+      if turn%2 == 0:
+        #Player1
+        taken_coins = int(input("Player 1: How many coins do you take? "))
+      else:
+        #Player 2
+        taken_coins = int(input("Player 2: How many coins do you take? "))
+      
+    if remaining_coins - taken_coins == 0:
+      print("No more coins left! ")
+      if turn %2 == 0:
+        print("Player 1 wins!")
+        print("Player 2 loses!")
+      else:
+        print("Player 2 wins!")
+        print("Player 1 loses!")
+    remaining_coins = remaining_coins - taken_coins
+    turn += 1
+  play_again = input('\nDo you want to play again(yes/no)?: ')
+  if play_again == 'yes':
+    play = True
+  else:
+    play = False
+
+print("Thank you for playing!")  
