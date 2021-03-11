@@ -1,0 +1,151 @@
+#This program was written to provide a predictive text-driven Haiku on a topic of the user’s choice
+#I used Datamuse API to generate the haiku
+#If you are unaware what a haiku is here are the requirements: 
+#A Haiku is a 3-line poem, where the first line contains 5 syllables, the second line contains 7 syllables, and the third line contains 5 syllables
+#The last words of each line in the Haiku must rhyme
+#A Haiku may not use the same word more than once
+#I have writeen this code to allow for the user to make as many haiku's as they like.
+#I hope you enjoy this haiku generator!
+
+import json, requests #I first import requests and json as that is how we will be calling the data from the API
+
+print("Hello, welcome to the predictive text Haiku generator!\n")
+
+haiku = True #the start of my loop allowing users to use the generator as many times as they like
+while haiku:
+
+  topic = input("What would you like to see a haiku about? ")
+  base_url = "https://api.datamuse.com/words?md=s&rel_trg=" #This URL returns the trigger word
+
+  full_url = base_url + topic
+
+  response = requests.get(full_url)
+
+  try:
+      
+    if response:
+        three_syllable = [] #I have made lists to be able call later to get words that are associated in the API
+        first_wordlist = []
+        data = json.loads(response.text)
+        for line in data:
+            word = line["word"]
+            syllables = line["numSyllables"]
+            
+            if syllables == 3:
+                three_syllable.append(word)
+        
+        if len(three_syllable) > 0:
+            first_word = three_syllable[0]
+            first_wordlist.append(first_word)
+        
+        
+        
+        second_base_url = "https://api.datamuse.com/words?md=s&lc=" #this URL returns a word that is related to the word to the left
+        second_search = first_wordlist[0]
+        
+        full_secondurl = second_base_url + second_search
+        response_two = requests.get(full_secondurl)
+        word_twolist = []
+        if response:
+            data_two = json.loads(response_two.text)
+            for line in data_two:
+                word_two = line["word"]
+                syllables_two = line["numSyllables"]
+                
+                if syllables_two == 2:
+                    word_twolist.append(word_two)
+                    
+            third_baseurl = "https://api.datamuse.com/words?md=s&lc=" #this URL returns a word that is related to the word to the left
+            third_search = word_twolist[0]
+            full_thirdurl = third_baseurl + third_search
+            response_three = requests.get(full_thirdurl)
+            word_threelist = []
+            
+            if response:
+                data_three = json.loads(response_three.text)
+                
+                for line in data_three:
+                    word_three = line["word"]
+                    syllables_three = line["numSyllables"]
+                    
+                    if syllables_three == 3:
+                        word_threelist.append(word_three)
+                        
+                fourth_baseurl = "https://api.datamuse.com/words?md=s&lc=" #this URL returns a word that is related to the word to the left
+                fourth_search = word_threelist[0]
+                fourth_url = fourth_baseurl + fourth_search
+                response_four = requests.get(fourth_url)
+                word_fourlist = []
+                if response:
+                    data_four = json.loads(response_four.text)
+                    
+                    for line in data_four:
+                        word_four = line["word"]
+                        syllables_four = line["numSyllables"]
+                        
+                        
+                        if syllables_four == 2:
+                            word_fourlist.append(word_four)
+                    
+                    fifth_baseurl = "https://api.datamuse.com/words?md=s&lc={}&rel_rhy={}".format(word_fourlist[0], word_twolist[0]) #this URl returns a word that rhymes with the associated word
+                    
+                    
+                    response_five = requests.get(fifth_baseurl)
+                    fifth_wordlist = []
+                    if response:
+                        data_five = json.loads(response_five.text)
+                        
+                        for line in data_five:
+                            word_five = line["word"]
+                            syllables_five = line["numSyllables"]
+                            
+                            if syllables_five == 2:
+                                fifth_wordlist.append(word_five)
+
+                        sixth_baseurl = "https://api.datamuse.com/words?md=s&lc="
+                        sixth_search = fifth_wordlist[0]
+                        sixth_search = sixth_baseurl + sixth_search
+                        sixth_response = requests.get(sixth_search)
+                        sixth_wordlist = []
+                        
+                        if response:
+                            data_six = json.loads(sixth_response.text)
+                            
+                            for line in data_six:
+                                word_six = line["word"]
+                                syllables_six = line["numSyllables"]
+                                
+                                if syllables_six == 3:
+                                    sixth_wordlist.append(word_six)
+
+
+
+                        seventh_baseurl = "https://api.datamuse.com/words?md=s&lc={}&rel_rhy={}".format(sixth_wordlist[0], word_twolist[0])
+                        seventh_response = requests.get(seventh_baseurl)
+                        seventh_wordlist = []
+                        if response:
+                            data_seven = json.loads(seventh_response.text)
+                            for line in data_seven:
+                                word_seven = line["word"]
+                                syllables_seven = line["numSyllables"]
+                                
+                                if syllables_seven == 2:
+                                    seventh_wordlist.append(word_seven)
+                                    
+        #Here is my print statement where I am calling the words from the lists I created earlier
+        print(first_wordlist[0], word_twolist[0])
+        print(word_threelist[0], word_fourlist[0] , fifth_wordlist[0])
+        print(sixth_wordlist[0], seventh_wordlist[1])
+ 
+  except IndexError as error:
+      print("Sorry haiku could not be generated")
+
+  haiku_again = input('\nWould you like to see another Haiku (yes/no)? ')
+  if haiku_again.lower() == 'yes':
+    haiku = True
+  else:
+    haiku = False    
+
+print()
+
+print("Thank you for using the Haiku generator!") 
